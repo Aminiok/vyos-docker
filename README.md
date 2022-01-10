@@ -11,7 +11,7 @@ Create the vyos container:
 ~]# docker run -d   -v /lib/modules:/lib/modules -v vyos-config:/opt/vyatta/etc/config/ --privileged  --network local-net --sysctl net.ipv6.conf.all.disable_ipv6=0 --restart always -p 179:179  -p 8000:8080  --name vyos-router -d afla/vyos:1.4
 ```
 
-Connect to the vyos container:
+Connecting to the vyos container:
 
 ```console
 ~]# docker exec -it vyos-router vbash
