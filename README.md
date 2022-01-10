@@ -46,6 +46,26 @@ Done
 
 ## Running VyOS in Kubernetes
 
+Creating a vyos deployment:
+
 ```console 
-kubectl apply -f vyos.yaml
+$ kubectl apply -f vyos.yaml
+persistentvolumeclaim/vyos-data created
+deployment.apps/vyos created
+```
+
+Connecting to the vyos pod:
+
+```console 
+$ kubectl get deployments
+NAME         READY   UP-TO-DATE   AVAILABLE   AGE
+vyos         1/1     1            1           59s
+
+$ kubectl get pods
+NAME                          READY   STATUS    RESTARTS   AGE
+vyos-567df88f99-g6k46         1/1     Pending   0          7s
+
+$ sudo kubectl exec -it vyos-567df88f99-g6k46 vbash
+vbash-4.1# su vyos
+vyos@vyos:/$
 ```
