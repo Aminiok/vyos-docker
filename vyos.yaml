@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vyos-router-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: silver
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vyos-router
+  labels:
+    app: vyos-router
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vyos-router
+  template:
+    metadata:
+      labels:
+        app: vyos-router
+    spec:
+      containers:
+      - name: vyos-router
+        image: afla/vyos:1.4
+        securityContext:
+          privileged: true
+        ports:
+        - containerPort: 179
+        - containerPort: 8080
+        volumeMounts:
+        - name: vyos-config
+          mountPath: /opt/vyatta/etc/config
+        - name: host-mount
+          mountPath: /lib/modules
+        lifecycle:
+          postStart:
+            exec:
+              command: ["/bin/sh", "-c", "bash post-run.sh"]
+      volumes:
+      - name: vyos-config
+        persistentVolumeClaim:
+          claimName: vyos-router-data
+      - name: host-mount
+        hostPath:
+          path: /lib/modules
